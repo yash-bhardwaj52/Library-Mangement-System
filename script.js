@@ -1,112 +1,513 @@
-/* ===== script.js ===== */
-// Fake book data
-let books = [
-  {id:1, title:"The Great Gatsby", author:"F. Scott Fitzgerald", status:"Available", desc:"A novel set in the Jazz Age about wealth, love, and the American Dream."},
-  {id:2, title:"1984", author:"George Orwell", status:"Issued", desc:"A dystopian novel about totalitarian regime and surveillance."},
-  {id:3, title:"To Kill a Mockingbird", author:"Harper Lee", status:"Available", desc:"A classic novel about race and justice in the Deep South."}
+// ===== LIBRARY MANAGEMENT SYSTEM =====
+
+// ===== BOOK DATABASE =====
+
+let books = JSON.parse(localStorage.getItem("books")) || [
+
+  {
+    id: 1,
+    title: "C Programming",
+    author: "Dennis Ritchie",
+    stock: 10,
+    category: "C"
+  },
+
+  {
+    id: 2,
+    title: "C++ Basics",
+    author: "Bjarne Stroustrup",
+    stock: 8,
+    category: "C++"
+  },
+
+  {
+    id: 3,
+    title: "Java Mastery",
+    author: "James Gosling",
+    stock: 6,
+    category: "Java"
+  },
+
+  {
+    id: 4,
+    title: "Advanced Java",
+    author: "Herbert Schildt",
+    stock: 5,
+    category: "Java"
+  },
+
+  {
+    id: 5,
+    title: "C# Complete Guide",
+    author: "Microsoft",
+    stock: 7,
+    category: "C#"
+  },
+
+  {
+    id: 6,
+    title: "Data Structures in C",
+    author: "Yashwant Kanetkar",
+    stock: 9,
+    category: "C"
+  },
+
+  {
+    id: 7,
+    title: "OOP with C++",
+    author: "Balagurusamy",
+    stock: 4,
+    category: "C++"
+  },
+
+  {
+    id: 8,
+    title: "Java for Beginners",
+    author: "Herbert Schildt",
+    stock: 10,
+    category: "Java"
+  },
+
+  {
+    id: 9,
+    title: "C# Programming",
+    author: "Rob Miles",
+    stock: 6,
+    category: "C#"
+  },
+
+  {
+    id: 10,
+    title: "Turbo C",
+    author: "Kanetkar",
+    stock: 5,
+    category: "C"
+  }
+
 ];
 
-// Render books for user dashboard
-function renderUserBooks(){
-  const container = document.getElementById("userBookList");
+
+// ===== USER ISSUED BOOKS =====
+// CURRENT LOGIN USER
+const currentUser =
+localStorage.getItem("loggedUser");
+
+// USER WISE BOOKS
+let issuedBooks =
+JSON.parse(
+localStorage.getItem(
+"issuedBooks_" + currentUser
+)
+) || [];
+
+
+// ===== SAVE DATA =====
+
+function saveData() {
+
+  localStorage.setItem(
+    "books",
+    JSON.stringify(books)
+  );
+
+  localStorage.setItem(
+    "issuedBooks_" + currentUser,
+    JSON.stringify(issuedBooks)
+  );
+
+}
+
+// ===== SHOW USER PROFILE =====
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const profileName =
+  document.getElementById("profileName");
+
+  const profileId =
+  document.getElementById("profileId");
+
+  if(profileName){
+
+    profileName.innerText =
+    localStorage.getItem("loggedUser") || "Guest";
+
+  }
+
+  if(profileId){
+
+    profileId.innerText =
+    localStorage.getItem("userId") || "U000";
+
+  }
+
+});
+
+
+// ===== RECOMMENDED BOOKS =====
+
+function renderRecommendedBooks(){
+
+  const container =
+  document.getElementById("userBookList");
+
   if(!container) return;
+
   container.innerHTML = "";
+
   books.forEach(book => {
-    let card = document.createElement("div");
-    card.className = "card";
+
+    const card =
+    document.createElement("div");
+
+    card.className = "book-card";
+
     card.innerHTML = `
-      <h3><a href="bookDetails.html?id=${book.id}">${book.title}</a></h3>
-      <p><strong>Author:</strong> ${book.author}</p>
-      <p><strong>Status:</strong> ${book.status}</p>
-      ${book.status === 'Available' ? `<button onclick="issueBook(${book.id})">Issue</button>` : `<button onclick="returnBook(${book.id})">Return</button>`}
-    `;
-    container.appendChild(card);
-  });
-}
 
-// Issue/Return functions
-function issueBook(id){
-  const book = books.find(b => b.id === id);
-  if(book) book.status = "Issued";
-  renderUserBooks();
-}
-function returnBook(id){
-  const book = books.find(b => b.id === id);
-  if(book) book.status = "Available";
-  renderUserBooks();
-}
-
-// Search filter
-const searchInput = document.getElementById("searchInput");
-if(searchInput){
-  searchInput.addEventListener("keyup", () => {
-    const val = searchInput.value.toLowerCase();
-    document.querySelectorAll(".card").forEach(card => {
-      const text = card.textContent.toLowerCase();
-      card.style.display = text.includes(val) ? "block" : "none";
-    });
-  });
-}
-
-// Render admin book list
-function renderAdminBooks(){
-  const container = document.getElementById("adminBookList");
-  if(!container) return;
-  container.innerHTML = "";
-  books.forEach(book => {
-    let card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
       <h3>${book.title}</h3>
-      <p><strong>Author:</strong> ${book.author}</p>
-      <p><strong>Status:</strong> ${book.status}</p>
-      <button onclick="deleteBook(${book.id})">Delete</button>
+
+      <p><b>Author:</b> ${book.author}</p>
+
+      <p><b>Category:</b> ${book.category}</p>
+
+      <p><b>Available Stock:</b> ${book.stock}</p>
+
+      <p>
+      <b>Status:</b>
+
+      ${book.stock > 0
+      ? "Available"
+      : "Out Of Stock"}
+
+      </p>
+
+      <button
+      onclick="issueBook(${book.id})">
+
+      ${book.stock > 0
+      ? "Issue Book"
+      : "Unavailable"}
+
+      </button>
+
     `;
+
     container.appendChild(card);
+
   });
+
 }
+
+
+// ===== ISSUE BOOK =====
+
+function issueBook(id){
+
+  const book =
+  books.find(b => b.id === id);
+
+  if(book.stock <= 0){
+
+    alert("Book Out Of Stock ❌");
+
+    return;
+
+  }
+
+  book.stock--;
+
+  issuedBooks.push(book);
+
+  saveData();
+
+  renderRecommendedBooks();
+
+  renderMyBooks();
+
+  renderAdminBooks();
+
+  alert("Book Issued Successfully 📚");
+
+}
+
+
+// ===== RETURN BOOK =====
+
+function returnBook(id){
+
+  const index =
+  issuedBooks.findIndex(
+    b => b.id === id
+  );
+
+  if(index !== -1){
+
+    const book =
+    books.find(b => b.id === id);
+
+    book.stock++;
+
+    issuedBooks.splice(index,1);
+
+    saveData();
+
+    renderRecommendedBooks();
+
+    renderMyBooks();
+
+    renderAdminBooks();
+
+    alert("Book Returned Successfully ✅");
+
+  }
+
+}
+
+
+// ===== MY BOOKS =====
+
+function renderMyBooks(){
+
+  const container =
+  document.getElementById("myBooks");
+
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  if(issuedBooks.length === 0){
+
+    container.innerHTML = `
+
+      <p
+      style="
+      color:#3e2723;
+      font-size:18px;
+      font-weight:bold;">
+
+      No Books Issued Yet 📚
+
+      </p>
+
+    `;
+
+    return;
+
+  }
+
+  issuedBooks.forEach(book => {
+
+    const card =
+    document.createElement("div");
+
+    card.className = "book-card";
+
+    card.innerHTML = `
+
+      <h3>${book.title}</h3>
+
+      <p><b>Author:</b> ${book.author}</p>
+
+      <p style="color:red;">
+      <b>Status:</b> Issued
+      </p>
+
+      <button
+      onclick="returnBook(${book.id})">
+
+      Return Book
+
+      </button>
+
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}
+
+
+// ===== SEARCH BOOK =====
+
+const searchInput =
+document.getElementById("searchInput");
+
+if(searchInput){
+
+  searchInput.addEventListener("keyup", () => {
+
+    const value =
+    searchInput.value.toLowerCase();
+
+    const container =
+    document.getElementById("userBookList");
+
+    container.innerHTML = "";
+
+    const filteredBooks =
+    books.filter(book =>
+      book.title.toLowerCase().includes(value)
+    );
+
+    filteredBooks.forEach(book => {
+
+      const card =
+      document.createElement("div");
+
+      card.className = "book-card";
+
+      card.innerHTML = `
+
+        <h3>${book.title}</h3>
+
+        <p><b>Author:</b> ${book.author}</p>
+
+        <p><b>Category:</b> ${book.category}</p>
+
+        <p><b>Stock:</b> ${book.stock}</p>
+
+        <button
+        onclick="issueBook(${book.id})">
+
+        ${book.stock > 0
+        ? "Issue Book"
+        : "Unavailable"}
+
+        </button>
+
+      `;
+
+      container.appendChild(card);
+
+    });
+
+  });
+
+}
+
+
+// ===== ADMIN BOOKS =====
+
+function renderAdminBooks(){
+
+  const container =
+  document.getElementById("adminBookList");
+
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  books.forEach(book => {
+
+    const card =
+    document.createElement("div");
+
+    card.className = "book-card";
+
+    card.innerHTML = `
+
+      <h3>${book.title}</h3>
+
+      <p><b>Author:</b> ${book.author}</p>
+
+      <p><b>Category:</b> ${book.category}</p>
+
+      <p><b>Stock:</b> ${book.stock}</p>
+
+      <div class="actions">
+
+        <button
+        class="delete-btn"
+        onclick="deleteBook(${book.id})">
+
+        Delete
+
+        </button>
+
+      </div>
+
+    `;
+
+    container.appendChild(card);
+
+  });
+
+}
+
+
+// ===== DELETE BOOK =====
 
 function deleteBook(id){
-  books = books.filter(b => b.id !== id);
+
+  books =
+  books.filter(book => book.id !== id);
+
+  saveData();
+
   renderAdminBooks();
+
 }
 
-// Add new book from admin form
-const adminForm = document.getElementById("adminBookForm");
+
+// ===== ADD BOOK =====
+
+const adminForm =
+document.getElementById("adminBookForm");
+
 if(adminForm){
-  adminForm.addEventListener("submit", e => {
+
+  adminForm.addEventListener("submit",(e)=>{
+
     e.preventDefault();
-    let title = document.getElementById("bookTitle").value;
-    let author = document.getElementById("bookAuthor").value;
-    books.push({id: Date.now(), title, author, status:"Available", desc:"New Book"});
-    adminForm.reset();
+
+    const title =
+    document.getElementById("bookTitle").value;
+
+    const author =
+    document.getElementById("bookAuthor").value;
+
+    const stock =
+    document.getElementById("bookStock").value;
+
+    const category =
+    document.getElementById("bookCategory").value;
+
+    books.push({
+
+      id: Date.now(),
+
+      title: title,
+
+      author: author,
+
+      stock: Number(stock),
+
+      category: category
+
+    });
+
+    saveData();
+
     renderAdminBooks();
+
+    adminForm.reset();
+
+    alert("Book Added Successfully ✅");
+
   });
+
 }
 
-// Book Details page
-function renderBookDetails(){
-  const container = document.getElementById("bookDetailsContainer");
-  if(!container) return;
-  const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get("id"));
-  const book = books.find(b => b.id === id);
-  if(book){
-    container.innerHTML = `
-      <h1>${book.title}</h1>
-      <p><strong>Author:</strong> ${book.author}</p>
-      <p><strong>Description:</strong> ${book.desc}</p>
-      <p><strong>Status:</strong> ${book.status}</p>
-      ${book.status === 'Available' ? `<button onclick="issueBook(${book.id})">Issue</button>` : `<button onclick="returnBook(${book.id})">Return</button>`}
-    `;
-  } else {
-    container.innerHTML = `<p>Book not found.</p>`;
-  }
-}
 
-// Run renders depending on page
+// ===== INITIAL RENDER =====
+
 document.addEventListener("DOMContentLoaded", () => {
-  renderUserBooks();
+
+  renderRecommendedBooks();
+
+  renderMyBooks();
+
   renderAdminBooks();
-  renderBookDetails();
+
 });
