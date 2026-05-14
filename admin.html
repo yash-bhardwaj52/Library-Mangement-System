@@ -12,202 +12,256 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:"Poppins",sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
     }
 
-    body{
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      background:url('1.webp')
-      no-repeat center center/cover;
-      background-attachment:fixed;
-      color:white;
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: url('1.webp') no-repeat center center/cover;
+      background-attachment: fixed;
+      color: white;
     }
 
     /* NAVBAR */
 
-    nav{
-      width:100%;
-      background:rgba(0,0,0,0.75);
-      display:flex;
-      justify-content:center;
-      gap:40px;
-      padding:15px 0;
-      backdrop-filter:blur(6px);
-      box-shadow:0 3px 8px rgba(0,0,0,0.6);
-      position:sticky;
-      top:0;
-      z-index:1000;
+    nav {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 15px 0;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    nav a{
-      color:white;
-      text-decoration:none;
-      font-size:18px;
-      font-weight:500;
-      transition:0.3s;
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      transition: 0.3s;
+      position: relative;
     }
 
-    nav a:hover{
-      color:#ffcc00;
+    nav a:hover {
+      color: #ffcc00;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0%;
+      height: 2px;
+      background: #ffcc00;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
     }
 
     /* MAIN CONTAINER */
 
-    .container{
-      flex:1;
-      padding:30px;
-      text-align:center;
-      animation:fadeIn 1.2s ease;
-      background:rgba(0,0,0,0.55);
-      border-radius:15px;
-      margin:20px auto;
-      width:90%;
-      overflow-y:auto;
-      box-shadow:0 8px 20px rgba(0,0,0,0.6);
+    .container {
+      flex: 1;
+      padding: 30px;
+      text-align: center;
+      animation: fadeIn 1.2s ease;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 15px;
+      margin: 20px auto;
+      width: 92%;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     }
 
-    .container h1{
-      font-size:38px;
-      margin-bottom:20px;
-      text-shadow:2px 2px 6px black;
+    .container h1 {
+      font-size: 38px;
+      margin-bottom: 25px;
+      text-shadow: 2px 2px 6px black;
     }
 
     /* FORM */
 
-    .book-form{
-      display:flex;
-      justify-content:center;
-      gap:15px;
-      margin-bottom:30px;
-      flex-wrap:wrap;
+    .book-form {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 35px;
+      flex-wrap: wrap;
     }
 
     .book-form input,
-    .book-form select{
-      padding:12px;
-      border:none;
-      outline:none;
-      border-radius:8px;
-      width:200px;
-      font-size:15px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.7);
+    .book-form select {
+      padding: 12px;
+      border: none;
+      outline: none;
+      border-radius: 8px;
+      width: 210px;
+      font-size: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
     }
 
-    .book-form button{
-      padding:12px 20px;
-      background:#ffcc00;
-      border:none;
-      border-radius:8px;
-      font-size:16px;
-      font-weight:600;
-      cursor:pointer;
-      transition:0.3s;
+    .book-form button {
+      padding: 12px 22px;
+      background: #ffcc00;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    .book-form button:hover{
-      background:#ffaa00;
-      transform:scale(1.05);
+    .book-form button:hover {
+      background: #ffaa00;
+      transform: scale(1.05);
     }
 
     /* BOOK GRID */
 
-    .book-list{
-      display:grid;
+    .book-list {
+      display: grid;
       grid-template-columns:
-      repeat(auto-fill,minmax(240px,1fr));
-      gap:25px;
+        repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
     }
 
-    .book-card{
-      background:rgba(255,255,255,0.92);
-      border-radius:15px;
-      padding:18px;
-      color:#222;
-      text-align:left;
-      box-shadow:0 8px 18px rgba(0,0,0,0.8);
-      transition:0.3s;
+    .book-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 18px;
+      color: #222;
+      text-align: left;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.8);
+      transition: 0.3s;
     }
 
-    .book-card:hover{
-      transform:translateY(-6px);
-      box-shadow:0 12px 25px rgba(0,0,0,0.5);
+    .book-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
     }
 
-    .book-card h3{
-      margin-bottom:10px;
-      color:#3e2723;
-      font-size:21px;
+    .book-card h3 {
+      margin-bottom: 10px;
+      color: #3e2723;
+      font-size: 21px;
     }
 
-    .book-card p{
-      margin:7px 0;
-      font-size:14px;
-      color:#444;
+    .book-card p {
+      margin: 7px 0;
+      font-size: 14px;
+      color: #444;
     }
 
-    .stock{
-      color:green;
-      font-weight:bold;
+    .actions {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .actions{
-      margin-top:15px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
+    .actions button {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
     }
 
-    .actions button{
-      flex:1;
-      border:none;
-      padding:8px;
-      border-radius:6px;
-      cursor:pointer;
-      font-weight:600;
-      transition:0.3s;
+    .delete-btn {
+      background: #f44336;
+      color: white;
     }
 
-    .edit-btn{
-      background:#4caf50;
-      color:white;
+    .delete-btn:hover {
+      background: #d32f2f;
     }
 
-    .edit-btn:hover{
-      background:#43a047;
+    /* RECORD TABLE */
+
+    .record-section {
+      margin-top: 50px;
     }
 
-    .delete-btn{
-      background:#f44336;
-      color:white;
+    .record-section h2 {
+      margin-bottom: 20px;
+      font-size: 34px;
+      color: #ffcc00;
+      text-shadow: 2px 2px 6px black;
     }
 
-    .delete-btn:hover{
-      background:#d32f2f;
+    .record-table {
+      overflow-x: auto;
+      background: white;
+      border-radius: 14px;
+      padding: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: black;
+    }
+
+    table th {
+      background: #3e2723;
+      color: white;
+      padding: 15px;
+      font-size: 16px;
+    }
+
+    table td {
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    table tr:hover {
+      background: #f5f5f5;
+    }
+
+    .pending {
+      color: red;
+      font-weight: bold;
+    }
+
+    .returned {
+      color: green;
+      font-weight: bold;
     }
 
     /* ANIMATION */
 
-    @keyframes fadeIn{
+    @keyframes fadeIn {
 
-      from{
-        opacity:0;
-        transform:translateY(30px);
+      from {
+        opacity: 0;
+        transform: translateY(30px);
       }
 
-      to{
-        opacity:1;
-        transform:translateY(0);
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
 
     }
-
   </style>
 
 </head>
@@ -232,27 +286,13 @@
 
     <!-- ADD BOOK FORM -->
 
-    <form
-    class="book-form"
-    id="adminBookForm">
+    <form class="book-form" id="adminBookForm">
 
-      <input
-      type="text"
-      id="bookTitle"
-      placeholder="Book Title"
-      required>
+      <input type="text" id="bookTitle" placeholder="Book Title" required>
 
-      <input
-      type="text"
-      id="bookAuthor"
-      placeholder="Author Name"
-      required>
+      <input type="text" id="bookAuthor" placeholder="Author Name" required>
 
-      <input
-      type="number"
-      id="bookStock"
-      placeholder="Book Stock"
-      required>
+      <input type="number" id="bookStock" placeholder="Book Stock" required>
 
       <select id="bookCategory">
 
@@ -272,11 +312,47 @@
 
     </form>
 
-    <!-- BOOKS -->
+    <!-- BOOK LIST -->
 
-    <div
-    class="book-list"
-    id="adminBookList">
+    <div class="book-list" id="adminBookList">
+
+    </div>
+
+    <!-- ISSUE RECORDS -->
+
+    <div class="record-section">
+
+      <h2>📋 User Issue Records</h2>
+
+      <div class="record-table">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>User Name</th>
+
+              <th>Book Name</th>
+
+              <th>Issue Date</th>
+
+              <th>Return Date</th>
+
+              <th>Status</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="recordTableBody">
+
+          </tbody>
+
+        </table>
+
+      </div>
 
     </div>
 

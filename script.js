@@ -90,16 +90,21 @@ let books = JSON.parse(localStorage.getItem("books")) || [
 // ===== USER ISSUED BOOKS =====
 // CURRENT LOGIN USER
 const currentUser =
-localStorage.getItem("loggedUser");
+  localStorage.getItem("loggedUser");
 
 // USER WISE BOOKS
 let issuedBooks =
-JSON.parse(
-localStorage.getItem(
-"issuedBooks_" + currentUser
-)
-) || [];
+  JSON.parse(
+    localStorage.getItem(
+      "issuedBooks_" + currentUser
+    )
+  ) || [];
+// ===== ISSUE RECORDS =====
 
+let issueRecords =
+  JSON.parse(
+    localStorage.getItem("issueRecords")
+  ) || [];
 
 // ===== SAVE DATA =====
 
@@ -115,6 +120,11 @@ function saveData() {
     JSON.stringify(issuedBooks)
   );
 
+  localStorage.setItem(
+    "issueRecords",
+    JSON.stringify(issueRecords)
+  );
+
 }
 
 // ===== SHOW USER PROFILE =====
@@ -122,22 +132,22 @@ function saveData() {
 document.addEventListener("DOMContentLoaded", () => {
 
   const profileName =
-  document.getElementById("profileName");
+    document.getElementById("profileName");
 
   const profileId =
-  document.getElementById("profileId");
+    document.getElementById("profileId");
 
-  if(profileName){
+  if (profileName) {
 
     profileName.innerText =
-    localStorage.getItem("loggedUser") || "Guest";
+      localStorage.getItem("loggedUser") || "Guest";
 
   }
 
-  if(profileId){
+  if (profileId) {
 
     profileId.innerText =
-    localStorage.getItem("userId") || "U000";
+      localStorage.getItem("userId") || "U000";
 
   }
 
@@ -146,19 +156,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== RECOMMENDED BOOKS =====
 
-function renderRecommendedBooks(){
+function renderRecommendedBooks() {
 
   const container =
-  document.getElementById("userBookList");
+    document.getElementById("userBookList");
 
-  if(!container) return;
+  if (!container) return;
 
   container.innerHTML = "";
 
   books.forEach(book => {
 
     const card =
-    document.createElement("div");
+      document.createElement("div");
 
     card.className = "book-card";
 
@@ -176,8 +186,8 @@ function renderRecommendedBooks(){
       <b>Status:</b>
 
       ${book.stock > 0
-      ? "Available"
-      : "Out Of Stock"}
+        ? "Available"
+        : "Out Of Stock"}
 
       </p>
 
@@ -185,8 +195,8 @@ function renderRecommendedBooks(){
       onclick="issueBook(${book.id})">
 
       ${book.stock > 0
-      ? "Issue Book"
-      : "Unavailable"}
+        ? "Issue Book"
+        : "Unavailable"}
 
       </button>
 
@@ -201,12 +211,12 @@ function renderRecommendedBooks(){
 
 // ===== ISSUE BOOK =====
 
-function issueBook(id){
+function issueBook(id) {
 
   const book =
-  books.find(b => b.id === id);
+    books.find(b => b.id === id);
 
-  if(book.stock <= 0){
+  if (book.stock <= 0) {
 
     alert("Book Out Of Stock ❌");
 
@@ -217,6 +227,39 @@ function issueBook(id){
   book.stock--;
 
   issuedBooks.push(book);
+  // ISSUE DATE
+  let today = new Date();
+
+  let issueDate =
+    today.toLocaleDateString();
+
+  // RETURN DATE (7 DAYS LATER)
+
+  let returnDay =
+    new Date();
+
+  returnDay.setDate(
+    returnDay.getDate() + 7
+  );
+
+  let returnDate =
+    returnDay.toLocaleDateString();
+
+  // SAVE RECORD
+
+  issueRecords.push({
+
+    username: currentUser,
+
+    bookTitle: book.title,
+
+    issueDate: issueDate,
+
+    returnDate: returnDate,
+
+    status: "Pending"
+
+  });
 
   saveData();
 
@@ -233,21 +276,39 @@ function issueBook(id){
 
 // ===== RETURN BOOK =====
 
-function returnBook(id){
+function returnBook(id) {
 
   const index =
-  issuedBooks.findIndex(
-    b => b.id === id
-  );
+    issuedBooks.findIndex(
+      b => b.id === id
+    );
 
-  if(index !== -1){
+  if (index !== -1) {
 
     const book =
-    books.find(b => b.id === id);
+      books.find(b => b.id === id);
 
     book.stock++;
 
-    issuedBooks.splice(index,1);
+    issuedBooks.splice(index, 1);
+    // UPDATE STATUS
+
+    let record =
+      issueRecords.find(r =>
+
+        r.username === currentUser &&
+
+        r.bookTitle === book.title &&
+
+        r.status === "Pending"
+
+      );
+
+    if (record) {
+
+      record.status = "Returned";
+
+    }
 
     saveData();
 
@@ -266,16 +327,16 @@ function returnBook(id){
 
 // ===== MY BOOKS =====
 
-function renderMyBooks(){
+function renderMyBooks() {
 
   const container =
-  document.getElementById("myBooks");
+    document.getElementById("myBooks");
 
-  if(!container) return;
+  if (!container) return;
 
   container.innerHTML = "";
 
-  if(issuedBooks.length === 0){
+  if (issuedBooks.length === 0) {
 
     container.innerHTML = `
 
@@ -298,7 +359,7 @@ function renderMyBooks(){
   issuedBooks.forEach(book => {
 
     const card =
-    document.createElement("div");
+      document.createElement("div");
 
     card.className = "book-card";
 
@@ -331,29 +392,29 @@ function renderMyBooks(){
 // ===== SEARCH BOOK =====
 
 const searchInput =
-document.getElementById("searchInput");
+  document.getElementById("searchInput");
 
-if(searchInput){
+if (searchInput) {
 
   searchInput.addEventListener("keyup", () => {
 
     const value =
-    searchInput.value.toLowerCase();
+      searchInput.value.toLowerCase();
 
     const container =
-    document.getElementById("userBookList");
+      document.getElementById("userBookList");
 
     container.innerHTML = "";
 
     const filteredBooks =
-    books.filter(book =>
-      book.title.toLowerCase().includes(value)
-    );
+      books.filter(book =>
+        book.title.toLowerCase().includes(value)
+      );
 
     filteredBooks.forEach(book => {
 
       const card =
-      document.createElement("div");
+        document.createElement("div");
 
       card.className = "book-card";
 
@@ -371,8 +432,8 @@ if(searchInput){
         onclick="issueBook(${book.id})">
 
         ${book.stock > 0
-        ? "Issue Book"
-        : "Unavailable"}
+          ? "Issue Book"
+          : "Unavailable"}
 
         </button>
 
@@ -389,19 +450,19 @@ if(searchInput){
 
 // ===== ADMIN BOOKS =====
 
-function renderAdminBooks(){
+function renderAdminBooks() {
 
   const container =
-  document.getElementById("adminBookList");
+    document.getElementById("adminBookList");
 
-  if(!container) return;
+  if (!container) return;
 
   container.innerHTML = "";
 
   books.forEach(book => {
 
     const card =
-    document.createElement("div");
+      document.createElement("div");
 
     card.className = "book-card";
 
@@ -438,10 +499,10 @@ function renderAdminBooks(){
 
 // ===== DELETE BOOK =====
 
-function deleteBook(id){
+function deleteBook(id) {
 
   books =
-  books.filter(book => book.id !== id);
+    books.filter(book => book.id !== id);
 
   saveData();
 
@@ -453,25 +514,25 @@ function deleteBook(id){
 // ===== ADD BOOK =====
 
 const adminForm =
-document.getElementById("adminBookForm");
+  document.getElementById("adminBookForm");
 
-if(adminForm){
+if (adminForm) {
 
-  adminForm.addEventListener("submit",(e)=>{
+  adminForm.addEventListener("submit", (e) => {
 
     e.preventDefault();
 
     const title =
-    document.getElementById("bookTitle").value;
+      document.getElementById("bookTitle").value;
 
     const author =
-    document.getElementById("bookAuthor").value;
+      document.getElementById("bookAuthor").value;
 
     const stock =
-    document.getElementById("bookStock").value;
+      document.getElementById("bookStock").value;
 
     const category =
-    document.getElementById("bookCategory").value;
+      document.getElementById("bookCategory").value;
 
     books.push({
 
@@ -510,4 +571,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderAdminBooks();
 
+  renderIssueRecords();
+
 });
+// ===== ISSUE RECORD TABLE =====
+
+function renderIssueRecords() {
+
+  const tableBody =
+    document.getElementById(
+      "recordTableBody"
+    );
+
+  if (!tableBody) return;
+
+  tableBody.innerHTML = "";
+
+  issueRecords.forEach(record => {
+
+    tableBody.innerHTML += `
+
+      <tr>
+
+        <td>${record.username}</td>
+
+        <td>${record.bookTitle}</td>
+
+        <td>${record.issueDate}</td>
+
+        <td>${record.returnDate}</td>
+
+        <td class="${record.status === "Pending"
+        ? "pending"
+        : "returned"
+      }">
+
+        ${record.status}
+
+        </td>
+
+      </tr>
+
+    `;
+
+  });
+
+}
